@@ -6,6 +6,12 @@ import tempfile
 
 from collections import defaultdict
 from contextlib import contextmanager
+<<<<<<< HEAD
+=======
+from typing import Set
+from typing import Union
+from warnings import catch_warnings
+>>>>>>> 3b811df... Fixes #614. Wrap the get_vcs method in a try-except block and catch the warning, then use the io writer to write with the very verbose mode.
 
 from poetry.utils._compat import Path
 from poetry.vcs import get_vcs
@@ -41,7 +47,12 @@ class Builder(object):
 
     def find_excluded_files(self):  # type: () -> list
         # Checking VCS
-        vcs = get_vcs(self._path)
+        with catch_warnings():
+            try:
+                vcs = get_vcs(self._path)
+            except Warning as warning:
+                self._io.writeln(warning, verbosity=self._io.VERBOSITY_VERY_VERBOSE)
+
         if not vcs:
             return []
 

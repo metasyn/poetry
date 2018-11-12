@@ -7,6 +7,7 @@ import sys
 import tarfile
 
 from gzip import GzipFile
+from warnings import catch_warnings
 
 from cleo import Application
 from cleo import Command
@@ -60,6 +61,20 @@ class MakeReleaseCommand(Command):
         pool = Pool()
         pool.add_repository(project.locker.locked_repository(with_dev_reqs=True))
 
+<<<<<<< HEAD
+=======
+        with catch_warnings():
+            try:
+                vcs = get_vcs(Path(__file__).parent)
+            except Warning as warning:
+                self._io.writeln(warning, verbosity=self._io.VERBOSITY_VERY_VERBOSE)
+
+        if vcs:
+            vcs_excluded = [str(f) for f in vcs.get_ignored_files()]
+        else:
+            vcs_excluded = []
+
+>>>>>>> 3b811df... Fixes #614. Wrap the get_vcs method in a try-except block and catch the warning, then use the io writer to write with the very verbose mode.
         with temporary_directory() as tmp_dir:
             # Copy poetry to tmp dir
             poetry_dir = os.path.join(tmp_dir, "poetry")
